@@ -67,34 +67,25 @@ window.onload = () => {
 
   // Get all matches
   fetch("/api/v1/matches").then(res => {
-    console.log("Request complete! response:", res)
-    // TODO: Swap mock data with real data
-    matches = [
-      {id: 6, name: 'Terry', description: 'Loves belly rubs.', picture: '/img/dogs/dog_3.jpg'},
-      {id: 7, name: 'Florence', description: 'Loves belly rubs.', picture: '/img/dogs/dog_4.jpg'},
-      {id: 8, name: 'Roxie', description: 'Loves belly rubs.', picture: '/img/dogs/dog_5.jpg'},
-    ]
+    return res.json();
+  }).then((data) => {
+    matches = data
     updateMatchesList(matches)
   })
   
   // Get current profile
   fetch("/api/v1/me").then(res => {
-    console.log("Request complete! response:", res)
-    // TODO: Swap mock data with real data
-    user = {id: 1, name: 'Cliford', description: 'Loves belly rubs.', picture: '/img/dogs/dog_1.jpg'}
+    return res.json();
+  }).then((data) => {
+    user = data
     updateMyProfilePhoto(user)
   })
   
   // Get new dogs
   fetch("/api/v1/dogs").then(res => {
-    console.log("Request complete! response:", res)
-    // TODO: Swap mock data with real data
-    dogs = [
-      {id: 2, name: 'Patches', description: 'Loves belly rubs.', picture: '/img/dogs/dog_2.jpg'},
-      {id: 3, name: 'Spot', description: 'Loves belly rubs.', picture: '/img/dogs/dog_3.jpg'},
-      {id: 4, name: 'Rover', description: 'Loves belly rubs.', picture: '/img/dogs/dog_4.jpg'},
-      {id: 5, name: 'Charles', description: 'Loves belly rubs.', picture: '/img/dogs/dog_5.jpg'},
-    ]
+    return res.json();
+  }).then((data) => {
+    dogs = data
     updateDogCard(dogs[0])
   })
   
@@ -107,7 +98,6 @@ window.onload = () => {
         fetch(`/api/v1/dogs/${dog.id}/dislike`, {
           method: "POST",
         }).then(res => {
-          console.log("Request complete! response:", res)
           updateDogCard(dogs[0])
         })
       }
@@ -123,8 +113,11 @@ window.onload = () => {
         fetch(`/api/v1/dogs/${dog.id}/like`, {
           method: "POST",
         }).then(res => {
-          console.log("Request complete! response:", res)
-          updateDogCard(dogs[0])
+          if(res.ok) {
+            updateDogCard(dogs[0])
+            matches.push(dog)
+            updateMatchesList(matches)
+          }
         })
       }
     })

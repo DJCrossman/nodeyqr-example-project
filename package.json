@@ -1,0 +1,29 @@
+{
+  "name": "nodeyqr-example-project",
+  "version": "1.0.0",
+  "description": "Find matches for your dog with the cutest dogs in town.",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DJCrossman/nodeyqr-example-project.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/DJCrossman/nodeyqr-example-project/issues"
+  },
+  "homepage": "https://github.com/DJCrossman/nodeyqr-example-project#readme",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1",
+    "nodemon": "^2.0.0"
+  }
+}
