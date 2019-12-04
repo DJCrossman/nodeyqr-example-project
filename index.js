@@ -1,33 +1,33 @@
 const express = require('express')
 const bodyParser = require('body-parser')
+const mongoose = require('mongoose');
+const UserModel = require('./models/user.model').UserModel
+const MatchModel = require('./models/match.model').MatchModel
+
+require('dotenv').config()
 const app = express()
-const port = 3000
+const port = process.env.PORT || 3000
 const urlencodedParser = bodyParser.urlencoded({extended: false})
+
+var mongoDB = process.env.MONGO_CONNECT_URI
+mongoose.connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true });
+var db = mongoose.connection;
+db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
 app.use(express.static('public'))
 app.use(urlencodedParser)
 app.set('view engine', 'pug');
 
-const user = {
-  id: 1,
-  name: 'Cliford',
-  description: 'Loves belly rubs.',
-  picture: '/img/dogs/dog_1.jpg'
-}
-const dogs = [
-  {id: 2, name: 'Patches', description: 'Loves belly rubs.', picture: '/img/dogs/dog_2.jpg'},
-  {id: 3, name: 'Spot', description: 'Loves belly rubs.', picture: '/img/dogs/dog_3.jpg'},
-  {id: 4, name: 'Rover', description: 'Loves belly rubs.', picture: '/img/dogs/dog_4.jpg'},
-  {id: 5, name: 'Charles', description: 'Loves belly rubs.', picture: '/img/dogs/dog_5.jpg'},
-]
-const matches = [
-  {id: 6, name: 'Terry', description: 'Loves belly rubs.', picture: '/img/dogs/dog_3.jpg'},
-  {id: 7, name: 'Florence', description: 'Loves belly rubs.', picture: '/img/dogs/dog_4.jpg'},
-  {id: 8, name: 'Roxie', description: 'Loves belly rubs.', picture: '/img/dogs/dog_5.jpg'},
-]
+const _id = 1
 
 app.get('', (req, res) => {
-  res.render('index', {user, matches})
+  Promise.all([
+    UserModel.findById(_id).exec(),
+    MatchModel.find({"connection._id": _id}).exec(),
+  ]).then(([user, matches]) => {
+    matches = matches.map(m => m.connection.find(c => c._id !== _id))
+    res.render('index', {user, matches})
+  })
 })
 
 app.get('/login', (req, res) => {
@@ -35,7 +35,13 @@ app.get('/login', (req, res) => {
 })
 
 app.get('/profile', (req, res) => {
-  res.render('profile', {user, matches})
+  Promise.all([
+    UserModel.findById(_id).exec(),
+    MatchModel.find({"connection._id": _id}).exec(),
+  ]).then(([user, matches]) => {
+    matches = matches.map(m => m.connection.find(c => c._id !== _id))
+    res.render('profile', {user, matches})
+  })
 })
 
 app.get('/dogs/:id', (req, res) => {
@@ -43,42 +49,53 @@ app.get('/dogs/:id', (req, res) => {
 })
 
 app.get('/api/v1/matches', (req, res) => {
-  res.status(200).json(matches)
+  MatchModel.find({"connection._id": _id}).exec((err, matches) => {
+    matches = matches.map(m => m.connection.find(c => c._id !== _id))
+    res.status(200).json(matches)
+  })
 })
 
 app.get('/api/v1/me', (req, res) => {
-  res.status(200).json(user)
+  UserModel.findById(_id).exec((err, user) => {
+    res.status(200).json(user)
+  })
 })
 
 app.get('/api/v1/dogs', (req, res) => {
-  res.status(200).json(dogs)
+  Promise.all([
+    UserModel.find({}).exec(),
+    MatchModel.find({"connection._id": _id}).exec(),
+  ]).then(([users, matches]) => {
+    matches = matches.map(m => {
+      let otherUser = m.connection.find(c => c._id !== _id) || {}
+      return otherUser._id
+    })
+    let dogs = users.filter(u => !matches.includes(u._id) && u._id !== _id)
+    res.status(200).json(dogs)
+  })
 })
 
 app.post('/api/v1/dogs/:id/like', (req, res) => {
-  const dog = dogs.find(d => d.id === +req.params.id)
-  if (dog) {
-    matches.push(dog)
-    var index = dogs.indexOf(dog);
-    if (index > -1) {
-      dogs.splice(index, 1);
-    }
-    res.status(200).json()
-  } else {
-    res.status(400).json({status: 404, message: 'Dog not found'})
-  }
+  const likeId = +req.params.id
+  Promise.all([
+    MatchModel.countDocuments(),
+    UserModel.findById(_id).exec(),
+    UserModel.findById(likeId).exec(),
+  ]).then(([count, currentUser, otherUser]) => {
+    console.log(currentUser._id, otherUser._id)
+    MatchModel.create({
+      _id: count++,
+      connection: [currentUser, otherUser]
+    }).then(() => {
+      res.status(200).json()
+    })
+  }).catch(() => {
+    res.status(404).json({status: 404, message: 'Dog not found'})
+  })
 })
 
 app.post('/api/v1/dogs/:id/dislike', (req, res) => {
-  const dog = dogs.find(d => d.id === +req.params.id)
-  if (dog) {
-    var index = dogs.indexOf(dog);
-    if (index > -1) {
-      dogs.splice(index, 1);
-    }
-    res.status(200).json()
-  } else {
-    res.status(400).json({status: 404, message: 'Dog not found'})
-  }
+  res.status(200).json()
 })
 
 app.listen(port, () => {

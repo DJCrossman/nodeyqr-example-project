@@ -14,7 +14,7 @@ block content
         .matches-container
           h3 Matches
           each match in matches
-            a(href='dogs/' + match.id)
+            a(href='dogs/' + match._id)
               .profile-container.text-dark.py-3
                 .img-profile.float-left.rounded-circle(style='background-image: url("' + match.picture +'");')
                 .px-2.float-left

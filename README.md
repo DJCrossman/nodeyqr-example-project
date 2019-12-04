@@ -2,6 +2,16 @@
 
 Find matches for your dog with the cutest dogs in town.
 
+## View Demo
+
+[View demonstration here](https://warm-depths-71529.herokuapp.com/)
+
+## Technology
+
+This project is built using Express.js, Bootstrap, Pug, Mongoose, and MongoDB.
+
+## Deploy
+
 ## Features
 
 - Add dog to profile

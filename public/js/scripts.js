@@ -39,7 +39,7 @@ window.onload = () => {
       matchesContainer.appendChild(h3)
       matches.forEach(match => {
         const a = document.createElement('a')
-        a.href = `message.html?id=${match.id}`
+        a.href = `dogs/${match._id}`
         const profileContainer = document.createElement('div')
         profileContainer.classList.add('profile-container', 'text-dark', 'py-3')
         const profileImage = document.createElement('div')
@@ -81,7 +81,7 @@ window.onload = () => {
     dislikeButton.addEventListener('click', (event) => {
       if (dogs.length > 0) {
         let dog = dogs.shift()
-        fetch(`/api/v1/dogs/${dog.id}/dislike`, {
+        fetch(`/api/v1/dogs/${dog._id}/dislike`, {
           method: "POST",
         }).then(res => {
           updateDogCard(dogs[0])
@@ -96,7 +96,7 @@ window.onload = () => {
     likeButton.addEventListener('click', (event) => {
       if (dogs.length > 0) {
         let dog = dogs.shift()
-        fetch(`/api/v1/dogs/${dog.id}/like`, {
+        fetch(`/api/v1/dogs/${dog._id}/like`, {
           method: "POST",
         }).then(res => {
           if(res.ok) {
