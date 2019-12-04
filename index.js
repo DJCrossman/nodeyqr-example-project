@@ -6,8 +6,14 @@ const urlencodedParser = bodyParser.urlencoded({extended: false})
 
 app.use(express.static('public'))
 app.use(urlencodedParser)
+app.set('view engine', 'pug');
 
-const user = {id: 1, name: 'Cliford', description: 'Loves belly rubs.', picture: '/img/dogs/dog_1.jpg'}
+const user = {
+  id: 1,
+  name: 'Cliford',
+  description: 'Loves belly rubs.',
+  picture: '/img/dogs/dog_1.jpg'
+}
 const dogs = [
   {id: 2, name: 'Patches', description: 'Loves belly rubs.', picture: '/img/dogs/dog_2.jpg'},
   {id: 3, name: 'Spot', description: 'Loves belly rubs.', picture: '/img/dogs/dog_3.jpg'},
@@ -19,6 +25,22 @@ const matches = [
   {id: 7, name: 'Florence', description: 'Loves belly rubs.', picture: '/img/dogs/dog_4.jpg'},
   {id: 8, name: 'Roxie', description: 'Loves belly rubs.', picture: '/img/dogs/dog_5.jpg'},
 ]
+
+app.get('', (req, res) => {
+  res.render('index', {user, matches})
+})
+
+app.get('/login', (req, res) => {
+  res.render('login', {})
+})
+
+app.get('/profile', (req, res) => {
+  res.render('profile', {user, matches})
+})
+
+app.get('/dogs/:id', (req, res) => {
+  res.status(500).send('Not implemented yet.')
+})
 
 app.get('/api/v1/matches', (req, res) => {
   res.status(200).json(matches)

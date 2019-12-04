@@ -60,25 +60,11 @@ window.onload = () => {
       });
     }
   }
-  let updateMyProfilePhoto = (user) => {
-    const profilePicture = document.getElementById('profile-picture')
-    profilePicture.style.backgroundImage = `url(${user.picture})`
-  }
-
   // Get all matches
   fetch("/api/v1/matches").then(res => {
     return res.json();
   }).then((data) => {
     matches = data
-    updateMatchesList(matches)
-  })
-  
-  // Get current profile
-  fetch("/api/v1/me").then(res => {
-    return res.json();
-  }).then((data) => {
-    user = data
-    updateMyProfilePhoto(user)
   })
   
   // Get new dogs

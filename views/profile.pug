@@ -1,0 +1,46 @@
+extends ./layout.pug
+
+block content
+  .container-fluid
+    .row.no-gutters.h-100
+      aside.col-md-3.border-right.border-dark.h-100
+        a(href='profile')
+          .bg-primary.text-white.profile-container.py-3.px-3
+            .float-left.p-3
+              a.text-white(href='/')
+                i.fas.fa-chevron-left.fa-2x
+            #profile-picture.img-profile.float-left.rounded-circle(style='background-image: url("' + user.picture +'");')
+            h4.p-2.float-left My Profile
+        .matches-container
+          h3 Matches
+          each match in matches
+            a(href='dogs/' + match.id)
+              .profile-container.text-dark.py-3
+                .img-profile.float-left.rounded-circle(style='background-image: url("' + match.picture +'");')
+                .px-2.float-left
+                  h4=match.name
+                  p=match.description
+      main.col-md-9.h-100.bg-light
+        .row.h-100
+          .col-md-8.my-auto.mx-auto
+            form.form-signin
+              .text-center.mb-4
+                h1.h3.mb-3.font-weight-normal Edit profile
+                p Build a profile for your puppy.
+              .form-label-group
+                input#name.form-control(type='text' placeholder='Name' required='' autofocus='', value=user.name)
+                label(for='name') Name
+              .form-label-group
+                input#breed.form-control(type='text' placeholder='Breed' autofocus='', value=user.breed)
+                label(for='breed') Breed
+              .form-label-group
+                input#description.form-control(type='text' placeholder='Description' required='' autofocus='', value=user.description)
+                label(for='description') Description
+              .form-group
+                .custom-file
+                  input#photo.custom-file-input(type='file')
+                  label.custom-file-label(for='photo') Choose file
+              .form-label-group
+                input#email.form-control(type='email' placeholder='Email address' required='' autofocus='', value=user.email)
+                label(for='email') Email address
+              button.btn.btn-lg.btn-primary.btn-block(type='submit') Update profile

@@ -1,0 +1,30 @@
+extends ./layout.pug
+
+block content
+  .container-fluid
+    .row.no-gutters.h-100
+      aside.col-md-3.border-right.border-dark.h-100
+        a(href='profile')
+          .bg-primary.text-white.profile-container.py-3.px-3
+            #profile-picture.img-profile.float-left.rounded-circle(style='background-image: url("' + user.picture +'");')
+            h4.p-2.float-left My Profile
+        .matches-container
+          h3 Matches
+          each match in matches
+            a(href='dogs/' + match.id)
+              .profile-container.text-dark.py-3
+                .img-profile.float-left.rounded-circle(style='background-image: url("' + match.picture +'");')
+                .px-2.float-left
+                  h4=match.name
+                  p=match.description
+      main.col-md-9.h-100.bg-light
+        .row.h-100
+          .col-md-4.my-auto.mx-auto
+            .dog-card.d-flex.w-100.rounded.shadow
+            .row.mt-3.text-center
+              .col
+                button#dislike.btn.btn-white.btn-lg.rounded-circle.shadow
+                  i.fas.fa-times.text-danger
+              .col
+                button#like.btn.btn-white.btn-lg.rounded-circle.shadow
+                  i.fas.fa-heart.text-success
