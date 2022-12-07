@@ -22,9 +22,9 @@
   },
   "homepage": "https://github.com/DJCrossman/nodeyqr-example-project#readme",
   "dependencies": {
-    "body-parser": "^1.19.0",
+    "body-parser": "^1.20.1",
     "dotenv": "^8.2.0",
-    "express": "^4.17.1",
+    "express": "^4.18.2",
     "mongoose": "^5.7.13",
     "nodemon": "^2.0.0",
     "pug": "^2.0.4"
